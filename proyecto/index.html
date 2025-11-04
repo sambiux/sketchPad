@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SketchPad Moderno</title>
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="icon" href="src/javascript.svg">
+</head>
+<body>
+  <div class="container">
+    <div class="toolbar">
+      <div class="left">
+        <button id="pen" class="active" title="Pluma">✏️</button>
+        <button id="eraser" title="Borrador">🧽</button>
+        <input type="color" id="color" value="#00bfff" title="Color">
+        <input type="range" id="size" min="1" max="40" value="5" title="Tamaño del pincel">
+      </div>
+
+      <div class="right">
+        <button id="clear" title="Limpiar lienzo">🗑️</button>
+        <button id="save" title="Guardar dibujo">💾</button>
+        <button id="bg" title="Cambiar fondo">🎨</button>
+      </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
