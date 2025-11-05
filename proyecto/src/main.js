@@ -27,31 +27,65 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 setTimeout(resizeCanvas, 10);
 
-canvas.addEventListener('mousedown', (e) => {
+// --- Función para obtener coordenadas (soporta mouse y touch)
+function getPosition(e) {
+  const rect = canvas.getBoundingClientRect();
+  if (e.touches) {
+    return {
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top
+    };
+  } else {
+    return {
+      x: e.offsetX,
+      y: e.offsetY
+    };
+  }
+}
+
+// --- Iniciar dibujo ---
+function startDrawing(e) {
   drawing = true;
   ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
+  const pos = getPosition(e);
+  ctx.moveTo(pos.x, pos.y);
+  e.preventDefault(); // evita el scroll en móvil
+}
 
-canvas.addEventListener('mousemove', (e) => {
+// --- Dibujar mientras se mueve ---
+function draw(e) {
   if (!drawing) return;
+  const pos = getPosition(e);
+
   ctx.lineWidth = size;
   ctx.lineCap = 'round';
+  ctx.strokeStyle = tool === 'pen' ? color : backgroundColor;
 
-  if (tool === 'pen') {
-    ctx.strokeStyle = color;
-  } else if (tool === 'eraser') {
-    ctx.strokeStyle = backgroundColor;
-  }
-
-  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-});
 
-canvas.addEventListener('mouseup', () => {
+  e.preventDefault();
+}
+
+// --- Detener dibujo ---
+function stopDrawing(e) {
   drawing = false;
-});
+  e.preventDefault();
+}
 
+// Eventos de mouse
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseleave', stopDrawing);
+
+// Eventos táctiles
+canvas.addEventListener('touchstart', startDrawing);
+canvas.addEventListener('touchmove', draw);
+canvas.addEventListener('touchend', stopDrawing);
+canvas.addEventListener('touchcancel', stopDrawing);
+
+// Controles
 colorPicker.addEventListener('input', (e) => color = e.target.value);
 sizeSlider.addEventListener('input', (e) => size = e.target.value);
 
